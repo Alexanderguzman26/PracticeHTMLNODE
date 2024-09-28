@@ -123,7 +123,7 @@ document.getElementById('password').addEventListener('input', function() {
 });
 
 function validateFullName(name) {
-    let nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    let nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;      
     return nameRegex.test(name);
 }
 
