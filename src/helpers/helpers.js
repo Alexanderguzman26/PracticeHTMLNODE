@@ -1,7 +1,6 @@
 document.getElementById('form').addEventListener('submit', async function(event) {
     console.log("iniciando validaciones");
     event.preventDefault();
-    
     clearErrors();
     let method = '';
     let body = '';
@@ -17,8 +16,7 @@ document.getElementById('form').addEventListener('submit', async function(event)
     let strengthBar = document.getElementById('passwordStrength');
     let isValid = true;
     console.log("userName: " + userName + " password: " + password)
-    if ((userName && password) && !fullName){
-        console.log("enter ")
+    if ((userName && password) && fullName === undefined){
         //camino para log in
         method = "GET"
         if (!validateUsername(userName)) {
@@ -71,7 +69,12 @@ document.getElementById('form').addEventListener('submit', async function(event)
         }
     }
     
-    let data = { method: method, headers: {'Content-Type': 'application/json' }}
+    let data = { 
+        method: method,
+        headers: {
+            'Content-Type': 'application/json' 
+            }
+        }
     if (isValid) {
         try {
             let textAlert = '';
@@ -82,7 +85,6 @@ document.getElementById('form').addEventListener('submit', async function(event)
             console.log("data", data)
             const response = await fetch(url, data);
             if (response.ok) {
-                alert('Registro completado.');
                 document.getElementById('form').reset();
                 alert(textAlert)
                 if (body != '')

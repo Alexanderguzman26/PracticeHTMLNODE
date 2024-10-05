@@ -21,11 +21,11 @@ class UserRepository {
 
     }
     async findByUsername(username) {
-        const[rows]= await promisePool.query('SELECT * FROM users WHERE username = ?', [username]);
+            
         return rows.length > 0 ? rows[0] : null;
     }
     
-    async createUser(user) {
+    async registerUser(user) {
         const { fullName, documentType, documentNumber, email, phone, username, password } = user;
         try {
             const [result] = await promisePool.query(
@@ -35,6 +35,7 @@ class UserRepository {
             );
             return { id: result.insertId, ...user };
         } catch (err) {
+            console.log("error registering")
             throw new Error(err.message);
         }
     }
