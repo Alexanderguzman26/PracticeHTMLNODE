@@ -2,6 +2,7 @@ const UserRepository = require('../repositories/userRepository');
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
+    console.log("llego controler", username, "-------", password)
     if (!username || !password) {
         return res.status(400).json({ error: 'El nombre de usuario y la contraseña son obligatorios.' });
     }

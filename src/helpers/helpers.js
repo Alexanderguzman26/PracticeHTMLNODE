@@ -2,7 +2,7 @@ document.getElementById('form').addEventListener('submit', async function(event)
     console.log("iniciando validaciones");
     event.preventDefault();
     clearErrors();
-    let method = '';
+    let method = 'POST';
     let body = '';
     let url = '/login';
     let userName = document.getElementById('username')?.value || undefined;
@@ -18,15 +18,16 @@ document.getElementById('form').addEventListener('submit', async function(event)
     console.log("userName: " + userName + " password: " + password)
     if ((userName && password) && fullName === undefined){
         //camino para log in
-        method = "GET"
         if (!validateUsername(userName)) {
             showError('usernameError', 'El nombre de usuario no debe contener caracteres especiales.');
             isValid = false;
         }
+        body = {
+            "username": userName,
+            "password": password
+        }
     }else{
         // camino para register
-        console.log("enter else")
-        method = 'POST'
         url = '/register'
         if (!validateFullName(fullName)) {
             showError('fullNameError', 'El nombre completo no debe contener caracteres especiales no permitidos.');
@@ -71,6 +72,7 @@ document.getElementById('form').addEventListener('submit', async function(event)
     
     let data = { 
         method: method,
+        body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json' 
             }
@@ -78,12 +80,11 @@ document.getElementById('form').addEventListener('submit', async function(event)
     if (isValid) {
         try {
             let textAlert = '';
-            if (body != ''){
-                data.body = JSON.stringify(body);
+            if (fullName != undefined)
                 textAlert = "registro guardado correctamente!!"
-            }
-            console.log("data", data)
-            const response = await fetch(url, data);
+            console.log("before", data)
+            const response = await fetch(`http://localhost:8000${url}`, data);
+            console.log("after ", response)
             if (response.ok) {
                 document.getElementById('form').reset();
                 alert(textAlert)
@@ -104,31 +105,32 @@ document.getElementById('form').addEventListener('submit', async function(event)
 
 
 document.getElementById('password').addEventListener('blur', function() {
-    let password = document.getElementById('password')?.value || undefined;
-    let fullNameField = document.getElementById('fullName');
-    let fullName = fullNameField ? fullNameField.value : '';
-    let strengthBar = document.getElementById('passwordStrength');
-    if (fullName !== '' && password.length >= 8) {
+    let password = document.getElementById('password')?.value || 0;
+    let fullName = document.getElementById('fullName')?.value || '';
+    let passwordBar = document.getElementById('password');
+    passwordBar.classList.remove('strength-weak', 'strength-fair', 'strength-good', 'strength-strong');
+    if (fullName !== '') {
         if (password.length < 8) {
-            strengthBar.className = 'strength-weak';
+            passwordBar.classList.add('strength-weak');
             showError('passwordError', 'La contraseña debe tener al menos 8 caracteres.');
         } else if (password.length >= 8 && /(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
             if (password.length >= 12) {
-                strengthBar.className = 'strength-strong';
+                passwordBar.classList.add('strength-strong');
                 showError('passwordError', 'La contraseña es muy segura.');
             } else if (password.length >= 10) {
-                strengthBar.className = 'strength-good';
+                passwordBar.classList.add('strength-good');
                 showError('passwordError', 'La contraseña es segura.');
             } else {
-                strengthBar.className = 'strength-fair';
+                passwordBar.classList.add('strength-fair');
                 showError('passwordError', 'La contraseña es débil.');
             }
         } else {
-            strengthBar.className = 'strength-weak';
+            passwordBar.classList.add('strength-weak');
             showError('passwordError', 'La contraseña es débil.');
         }
     }
 });
+
 
 
 function validateFullName(name) {
