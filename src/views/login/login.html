@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Registro</title>
     <link rel="stylesheet" href="./login.css">
-    <link rel="stylesheet" href="../../../globals.css">
 </head>
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="registrationForm">
+        <form id="form">
             <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required placeholder="user100">
+            <div class="error-message" id="usernameError"></div>
 
             <label for="password">Contraseña:</label>
-            <input  id="password" name="password" required>
+            <input  id="password" name="password" required type="password">
+            <div class="password-strength" id="passwordStrength"></div>
+            <div class="error-message" id="passwordError"></div>
 
             <button type="submit">Login</button>
             <div class="register">

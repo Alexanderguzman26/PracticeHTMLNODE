@@ -1,30 +1,28 @@
-document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+document.getElementById('form').addEventListener('submit', async function(event) {
     console.log("iniciando validaciones");
     event.preventDefault();
     
     clearErrors();
     let method = '';
     let body = '';
-    let url = '/';
-    let userName = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
-    let fullName = document.getElementById('fullName').value;
-    let documentType = document.getElementById('documentType').value;  // Agregado: obtener documentType
-    let documentNumber = document.getElementById('documentNumber').value;
-    let email = document.getElementById('email').value;
-    let phone = document.getElementById('phone').value;
-    let confirmPassword = document.getElementById('confirmPassword').value;
+    let url = '/login';
+    let userName = document.getElementById('username')?.value || undefined;
+    let password = document.getElementById('password')?.value || undefined;
+    let fullName = document.getElementById('fullName')?.value || undefined;
+    let documentType = document.getElementById('documentType')?.value || undefined;  
+    let documentNumber = document.getElementById('documentNumber')?.value || undefined;
+    let email = document.getElementById('email')?.value || undefined;
+    let phone = document.getElementById('phone')?.value || undefined;
+    let confirmPassword = document.getElementById('confirmPassword')?.value || undefined;
+    let strengthBar = document.getElementById('passwordStrength');
     let isValid = true;
+    console.log("userName: " + userName + " password: " + password)
     if ((userName && password) && !fullName){
         console.log("enter ")
         //camino para log in
         method = "GET"
         if (!validateUsername(userName)) {
             showError('usernameError', 'El nombre de usuario no debe contener caracteres especiales.');
-            isValid = false;
-        }
-        if (!validatePassword(password)) {
-            showError('passwordError', 'La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, un número y un carácter especial permitido.');
             isValid = false;
         }
     }else{
@@ -72,6 +70,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
             "password": password
         }
     }
+    
     let data = { method: method, headers: {'Content-Type': 'application/json' }}
     if (isValid) {
         try {
@@ -81,11 +80,15 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
                 textAlert = "registro guardado correctamente!!"
             }
             console.log("data", data)
-            const response = await fetch('', data);
+            const response = await fetch(url, data);
             if (response.ok) {
                 alert('Registro completado.');
-                document.getElementById('registrationForm').reset();
+                document.getElementById('form').reset();
                 alert(textAlert)
+                if (body != '')
+                    window.location.href = '/src/views/home/home.html';    
+                else
+                    window.location.href = '/src/views/login.html';
             } else {
                 const result = await response.json();
                 alert(result.error);
@@ -98,29 +101,33 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 });
 
 
-document.getElementById('password').addEventListener('input', function() {
-    let password = document.getElementById('password').value;
-    let strengthBar = document.getElementById('password');
-    
-    if (password.length < 8) {
-        strengthBar.className = 'strength-weak';
-        showError('passwordError', 'La contraseña debe tener al menos 8 caracteres.');
-    } else if (password.length >= 8 && /(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
-        if (password.length >= 12) {
-            strengthBar.className = 'strength-strong';
-            showError('passwordError', 'La contraseña es muy segura.');
-        } else if (password.length >= 10) {
-            strengthBar.className = 'strength-good';
-            showError('passwordError', 'La contraseña es segura.');
+document.getElementById('password').addEventListener('blur', function() {
+    let password = document.getElementById('password')?.value || undefined;
+    let fullNameField = document.getElementById('fullName');
+    let fullName = fullNameField ? fullNameField.value : '';
+    let strengthBar = document.getElementById('passwordStrength');
+    if (fullName !== '' && password.length >= 8) {
+        if (password.length < 8) {
+            strengthBar.className = 'strength-weak';
+            showError('passwordError', 'La contraseña debe tener al menos 8 caracteres.');
+        } else if (password.length >= 8 && /(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
+            if (password.length >= 12) {
+                strengthBar.className = 'strength-strong';
+                showError('passwordError', 'La contraseña es muy segura.');
+            } else if (password.length >= 10) {
+                strengthBar.className = 'strength-good';
+                showError('passwordError', 'La contraseña es segura.');
+            } else {
+                strengthBar.className = 'strength-fair';
+                showError('passwordError', 'La contraseña es débil.');
+            }
         } else {
-            strengthBar.className = 'strength-fair';
-            showError('passwordError', 'La contraseña es debil.');
+            strengthBar.className = 'strength-weak';
+            showError('passwordError', 'La contraseña es débil.');
         }
-    } else {
-        strengthBar.className = 'strength-weak';
-        showError('passwordError', 'La contraseña es debil.');
     }
 });
+
 
 function validateFullName(name) {
     let nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;      
@@ -157,6 +164,7 @@ function validateUsername(username) {
     let usernameRegex = /^[a-zA-Z0-9_.-]+$/;
     return usernameRegex.test(username);
 }
+
 
 function validatePassword(password) {
     let passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

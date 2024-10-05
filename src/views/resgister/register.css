@@ -6,15 +6,35 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    position: relative;
+    margin: 0;
+}
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('/src/public/img/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px); 
+    z-index: -1;
 }
 
 .container {
-    background-color: rgba(255, 255, 255, 0.5); 
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 40px;
+    max-width: 400px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     width: 400px;
+    margin: 50px auto;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .login{
@@ -25,7 +45,7 @@ body {
 
 .login > a{
     text-decoration: none;
-    color: #a29d9d;
+    color: #000000;
 }
 
 h1 {
